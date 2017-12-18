@@ -1,0 +1,14 @@
+UART设备 与 Arduino板子 互联
+
+两个互相连接的设备在使用串口通信时，会需要连接三条线，设备1的TX连接设备2的RX，同理，设备1的RX连接设备2的TX，构成了图中的数据传输方向，此外，还需要一个公地线GND，使得电路形成完整回路。
+
+
+实现Uart
+
+UART
+
+UART的全名是Universal Asynchronous Receiver/Transmitter，通用异步收发传输器。它是一种数据传输总线，有两个通道RX和TX，分别作用为收和发的功能，每个通道都是单向的，互不干扰。
+
+
+
+串口通信UART
