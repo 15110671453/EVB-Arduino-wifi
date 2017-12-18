@@ -1,0 +1,67 @@
+Mac下可完成串口开发的软件
+
+原先 使用Arduino 开发板 
+
+使用mac下的Arduino IDE 即可连接 进行串口通信 并且 完成开发
+
+后来 公司使用 EVB 板 加  UARt wifi 模块
+
+
+将Wi-Fi模块 从evb 上拆下 安装到 arduino 上
+
+测试lora
+
+但是 有些问题 貌似我的 arduino 板 架构 太弱 
+
+
+在这种情况下  只能使用 evb板
+
+
+
+但是 插上evb板  原先的ide 开发工具检测不到 串口  
+
+
+解决办法 
+
+
+第一  有一款软件 XShell  安装到 mac 上 可以实现 和开发板 串口通信 但是 收费
+
+
+第二 使用 开源的 minicom  原先 在linux 上使用  现在使用brew 安装到 mac 上进行开发
+
+
+
+第三  下载  http://download.pchome.net/internet/ftp/download-163503.html 
+安装SecureCRT串口调试工具
+破解脚本
+sudo perl ~/Downloads/securecrt_mac_crack.pl /Applications/SecureCRT.app/Contents/MacOS/SecureCRT
+macserver:~ admindyn$ sudo perl ~/Downloads/securecrt_mac_crack.pl /Applications/SecureCRT.app/Contents/MacOS/SecureCRT
+Password:
+defined(@array) is deprecated at /Users/admindyn/Downloads/securecrt_mac_crack.pl line 30.
+	(Maybe you should just omit the defined()?)
+given is experimental at /Users/admindyn/Downloads/securecrt_mac_crack.pl line 62.
+when is experimental at /Users/admindyn/Downloads/securecrt_mac_crack.pl line 63.
+when is experimental at /Users/admindyn/Downloads/securecrt_mac_crack.pl line 69.
+crack successful
+
+License:
+
+	Name:		bleedfly
+	Company:	bleedfly.com
+	Serial Number:	03-29-002542
+	License Key:	ADGB7V 9SHE34 Y2BST3 K78ZKF ADUPW4 K819ZW 4HVJCE P1NYRC
+	Issue Date:	09-17-2013
+
+
+macserver:~ admindyn$ 
+
+破解完毕  将License Key:	ADGB7V 9SHE34 Y2BST3 K78ZKF ADUPW4 K819ZW 4HVJCE P1NYRC 输入
+
+
+发现破解 完 m点击 打开 mac 提示 文件损坏
+
+
+
+第四  使用 SerialTools http://www.w7ay.net/site/Applications/Serial%20Tools/
+
+
