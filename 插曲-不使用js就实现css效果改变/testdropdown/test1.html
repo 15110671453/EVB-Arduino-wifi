@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+   /*base*/
+blockquote,
+body,
+button,
+dd,
+div,
+dl,
+dt,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+li,
+ol,
+p,
+pre,
+td,
+textarea,
+th,
+ul {
+    margin: 0;
+    padding: 0; 
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+}
+li {
+    list-style: none
+}
+
+   /*
+    超出我这个区域的子元素都隐藏
+   */
+    .bodyZuiWai
+    {
+
+        line-height: 24px;
+        font: 14px Helvetica Neue, Helvetica, PingFang SC, \5FAE\8F6F\96C5\9ED1, Tahoma, Arial, sans-serif;
+
+    	overflow: hidden 
+
+    }
+    .bodyContent
+    {
+    	position: absolute;
+    	left: 200px;
+   		right: 0;
+    	top: 0;
+    	bottom: 0;
+    	z-index: 998;
+    	width: auto;
+    	overflow: hidden;
+    	overflow-y: auto;
+    	box-sizing: border-box
+
+
+    }
+    .xiuZhengBodyContent
+    {
+    	top: 60px;
+   		bottom: 44px;
+   		background-color: #2F4056
+    }
+    .logoHeader
+    {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 200px;
+        height: 100%;
+        line-height: 60px;
+        text-align: center;
+        color: #009688;
+        font-size: 16px
+    }
+    .header
+    {
+    	z-index: 1000;
+
+    	height: 60px
+        
+    }
+   
+    .xiuZhengHeader
+    {
+    	 background-color: #23262E
+    }
+    .cebianLan
+    {
+    	position: fixed;
+    	top: 0;
+    	bottom: 0;
+    	z-index: 999;
+    	width: 200px;
+    	overflow-x: hidden
+
+
+    }
+    .xiuZhengCeBianLan
+    {
+        top: 60px;
+        width: 200px;
+        overflow-x: hidden;
+    	background-color: #1E9FFF;
+       
+    }
+    /*
+    底部版权信息  固定的 相对浏览器定位 因为它的父级元素是浏览器 原则是相对父级元素定位 
+    */
+    .footer
+    {
+    
+        position: fixed; 
+        left: 200px;
+        right: 0;
+        bottom: 0;
+        height: 44px;
+        line-height: 44px;
+        padding: 0 15px;
+
+        background-color: #FFB800
+
+    }
+    .xiuZhengFooter
+    {
+    	background-color: #FFB800
+    }
+    .navParent{
+    
+        position: relative;
+        padding: 0 20px;
+        background-color: #393D49;
+        color: #fff;
+        border-radius: 2px;
+        font-size: 0;
+        box-sizing: border-box
+
+
+  
+    }
+    .navParent * 
+    {
+    	 font-size: 14px;
+        
+    }
+    .xiuZhengNavParent
+    {
+    	background: 0 0;
+        left: 200px;
+            top: 0
+    }
+	.nav-1item{
+
+	    position: relative;
+     /*这里将li内敛元素 就将li 横排了*/
+        display: inline-block;
+        *display: inline;
+        *zoom: 1;
+    /*这里将li 同级li之间 垂直方向对齐方式*/
+        vertical-align: middle;
+         /*这里将li 单项中的元素高度限制 在60 和 header高度一致*/
+        line-height: 60px;
+
+        font-size: 14px
+
+	
+    }
+    /*
+    这里才是标签长出来的位置与样子 宽高 颜色
+    */
+	.nav-1item-a{
+    /*这里将li中的a元素 block 行级元素 设置pading*/
+	    display: block;
+        padding: 0 20px;
+        color: #fff;
+        color: rgba(255, 255, 255, .7);
+        transition: all .3s;
+        font-size: 14px
+        -webkit-transition: all .3s
+  
+   
+   
+	}
+    .nav-1Image
+    {
+
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+        border-radius: 50%
+    }
+    .nav-1More
+    {
+        position: relative;
+        display: inline-block;
+        padding: 0 6px;
+        font-size: 12px;
+        text-align: center;
+        background-color: #FF5722;
+        color: #fff;
+        border-radius: 2px
+    }
+    .nav-1item-tree
+    {
+        display: block;
+        width: 100%;
+        line-height: 45px
+    }
+    .nav-1item-atree
+    {
+         height: 45px;
+         line-height: 45px;
+         text-overflow: ellipsis;
+         overflow: hidden;
+         white-space: nowrap
+    }
+ 
+    /* 这是标签栏 二级 菜单 默认是隐藏的 这个隐藏 不仅隐藏并且也不占位 */
+	.nav-2item
+	{
+
+
+        /* 这是标签栏 二级 菜单 display none 二级菜单在界面不现实不占位 */
+        display: none;
+        position: absolute;
+        left: 0;
+        /* 这里设置绝对定位 因为是 dl 父级元素是li 相对父级元素位置 开始计算 调整 */
+        top: 65px;
+        min-width: 100%;
+        line-height: 36px;
+        padding: 5px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
+        border: 1px solid #d2d2d2;
+        background-color: #fff;
+        z-index: 100;
+        border-radius: 2px;
+        white-space: nowrap
+
+    
+  
+	}
+    a {
+        color: #333;
+        text-decoration: none
+    }
+
+    a:hover {
+        color: #777
+    }
+
+    a cite {
+        font-style: normal;
+        *cursor: pointer
+    }
+    .header a:hover {
+        transition: all .5s;
+        -webkit-transition: all .5s
+    }
+    .nav-1item-a:hover{
+        color: #fff
+    }
+    .nav-2item a {
+        color: #333
+    }
+    .nav-2item a:hover{
+        background-color: #f2f2f2;
+        color: #000
+    }
+   /*
+    仅通过hover css 来响应更改 其他元素的css 实现 动态效果
+     没有js的世界 安详很多
+   */
+    .nav-1item:hover  dl.nav-2item{
+        display: block;
+        padding: 0;
+        z-index: 999;
+        background-color: rgba(0, 0, 0, .3)!important
+    }
+	
+       /* 相对定位 后面的无定位容器不会浮上来 相对原本应该的位置做调整 */
+     
+	.nav-2item-dd {
+         /* 相对定位 后面的无定位容器不会浮上来 相对原本应该的位置做调整  相对自己原本应该在的位置 开始计算 调整*/
+		position: relative;
+	}
+     /* 绝对定位 相对父级元素绝对定位 前面和后面的本应同级的元素会认为它不存在 它的层高于其他默认定位容器 用的较多 有float的 效果 后面的无定位容器会浮上来 */
+     
+	.righted
+	{
+		position: absolute !important;
+    	right: 0;
+    	top: 0
+	}
+      /* 这里才是标签列表长出来的位置--绝对定位 相对父级元素绝对定位 前面和后面的本应同级的元素会认为它不存在 它的层高于其他默认定位容器 */
+   
+	.lefted
+	{
+
+		position: absolute !important;
+   		left: 200px;
+    	top: 0
+
+	}
+    .layui-circle {
+        border-radius: 100%
+    }
+    .circle {
+        border-radius: 100%
+    }
+    .showItem {
+        display: block!important
+    }
+
+    .hideItem {
+        display: none!important
+    }
+    .showItem2 {
+        display: block;
+        padding: 0;
+    }
+    .selected 
+    {
+        background-color: #5FB878;
+        color: #fff
+    }
+    .selected a {
+        background-color: #5FB878;
+        color: #fff
+    }
+    .selectd:after {
+        content: '';
+        top: auto;
+        bottom: 0;
+        width: 100%;
+        display: none
+    }
+    </style>
+</head>
+<!--html的注释哟-->
+<body class="bodyZuiWai">
+	<div class="header xiuZhengHeader">
+        <div class="logoHeader">管理界面</div>
+		 <ul class="navParent xiuZhengNavParent " >
+
+           
+            <li class="nav-1item">
+                <a class="nav-1item-a " href="javascript:;">第一项 <span class="nav-1More">10</span> </a>
+            </li>
+            <li class="nav-1item  selected">
+                <a  class="nav-1item-a" href="javascript:;">第二项</a>
+                <dl class="nav-2item">
+                    <dd class="nav-2item-dd ">
+                        <a  class="nav-1item-a" href="javascript:;">基本资料设置查看查看</a></dd>
+                    <dd class="nav-2item-dd">
+                        <a class="nav-1item-a" href="javascript:;">安全设置</a>
+                    </dd>
+                </dl>
+
+            </li>
+            <li class="nav-1item">
+                <a class="nav-1item-a" href="javascript:;">第三项</a>
+            
+            </li>
+
+        </ul>
+	</div>
+	<div class="cebianLan xiuZhengCeBianLan">
+		<ul>
+
+           
+            <li>
+                <a href="javascript:;">第一项</a>
+            
+            </li>
+            <li>
+                <a href="javascript:;">第二项</a>
+                <dl>
+                    <dd><a href="javascript:;">基本资料</a></dd>
+                    <dd><a href="javascript:;">安全设置</a></dd>
+                </dl>
+
+            </li>
+            <li>
+                <a href="javascript:;">第三项</a>
+            </li>
+
+        </ul>
+	</div>
+	<div class="bodyContent xiuZhengBodyContent">
+		
+	</div>
+	<div class="footer xiuZhengFooter">
+		<ul>
+
+           
+            <li>
+                <a href="javascript:;">第一项</a>
+            
+            </li>
+            <li>
+                <a href="javascript:;">第二项</a>
+              
+
+            </li>
+            <li>
+                <a href="javascript:;">第三项</a>
+            </li>
+
+        </ul>
+	</div>
+
+
+
+</body>
+</html>
