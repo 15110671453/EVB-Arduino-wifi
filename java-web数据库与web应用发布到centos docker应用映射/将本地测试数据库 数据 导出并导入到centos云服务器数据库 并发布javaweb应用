@@ -1,0 +1,80 @@
+将本地测试数据库 数据 导出并导入到centos云服务器数据库 并发布javaweb应用
+Server version: 5.6.34 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show tables;
+ERROR 1046 (3D000): No database selected
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| database1          |
+| iisns              |
+| iwebshop           |
+| mysql              |
+| performance_schema |
+| test               |
+| tpshop             |
+| yii2advanced       |
++--------------------+
+9 rows in set (0.01 sec)
+
+mysql> create database JfinalDB;
+
+
+mysql> use JfinalDB
+Database changed
+mysql> set names utf8
+    -> ;
+Query OK, 0 rows affected (0.00 sec)
+
+
+
+mysql> source '/usr/local/tomcat/dingyanan/datablog/JfinalDB_t_AServerList.sql' ;
+ERROR: 
+Failed to open file ''/usr/local/tomcat/dingyanan/datablog/JfinalDB_t_AServerList.sql'', error: 2
+mysql> source /usr/local/tomcat/dingyanan/datablog/JfinalDB_t_AServerList.sql ; Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+
+
+注意 在发布java代码前 记得修改 代码中数据库 jdbc连接配置
+
+同时 可以使用 idea 开发工具中的database 工具 用已有的配置
+
+测试连接服务器数据库 如果成功 证明 代码中的配置没错 可以发布到站点
+
+
+
+
+
+
+
+
+
+
