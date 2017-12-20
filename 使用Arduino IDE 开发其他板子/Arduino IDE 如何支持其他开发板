@@ -1,0 +1,36 @@
+Arduino IDE 如何支持其他开发板
+
+
+我们之前使用Arduino开发板 做物联网研究
+
+现在 公司提供其他的开发板  并开发 lora 模块研究
+
+如何 支持呢
+
+
+	第一  
+
+		Arduino IDE是一种很方便的开发环境，通过把底层代码函数化，做到让使用者开发软件不需要太多了解底层控制，缩短了代码，大大提升了开发效率。而且Arduino基于C/C++，其语言、开发环境都很容易理解，是初学者的一个不错选择。
+
+
+	第二  
+
+		网络上已经有Arduino for STM32的文章了，不过都是针对自家做的板子所写，不支持其他板子
+
+	第三
+
+		此方法针对
+		此方法适用于STM32F103C8x、STM32F103CBx、STM32F103Rxx 芯片。
+
+
+	1、安装 Arduino 软件
+
+	2、STM32 master文件，下载解压之后，把文件夹名改成Arduino_STM32，拷贝到My Documents/Arduino/hardware下，如果hardware文件夹不存在的话就新建一个。
+
+	3、安装STM32驱动，不安装的话com口识别不出来，win7/8应该都可以在线自动安装，如果还是不行的话就百度搜一下驱动程序吧。
+
+	4、打开Arduino IDE，找到我们的板子
+
+	5、不同的开发板BOOT0、BOOT1设置的不一样，我的是用跳帽短接BOOT0，BOOT1不动之后复位进入SystemBoot模式。（stm32有多钟启动模式，UserBoot、SystemBoot、SRAM_Boot模式，其中如果使用串口下载要擦写FLASH的话一定要用SystemBoot模式，UserBoot模式是写好程序之后执行这个程序的时候用的，在我的板子上是BOOT0不短接，BOOT1随意，也就是不用跳线帽的时候的默认模式）
+
+	6、安好跳线帽之后按reset复位，写好的程序就可以往里面烧写了。
