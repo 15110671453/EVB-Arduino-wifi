@@ -1,0 +1,92 @@
+我们开发板 Arduino其实是需要驱动的
+
+但是我们的Mac 操作系统 连接Arduino开发板 插上就可以使用不需要驱动
+
+然后安装Arduino ide 开发工具 就可以进行 研究工作
+
+但是 我们在Windows系统上 同样用USB 连接开发板 我们需要安装针对该开发板的驱动
+
+那么我们现在使用 公司提供的板子 连接到mac 下需要驱动吗？
+
+我们发现 在Mac 关于本机 系统报告  硬件 USB 下可以找到Arduino 板子 也可以找到
+
+公司提供的另一块板子
+
+证明不需要针对板子 安装驱动  仅在MAC下
+
+
+但是  在Arduino 找不到该板子呢 
+
+  参考 Arduino IDE 如何支持其他开发板
+
+ 我们安装的Arduino IDE 它所支持的板子以及开发库 原来都在这里
+
+ 	macserver:~ admindyn$ cd /Applications/Arduino.app/Contents/MacOS 
+macserver:MacOS admindyn$ ls -la
+total 200
+drwxr-xr-x@ 3 admindyn  staff    102  8 18 16:56 .
+drwxr-xr-x@ 9 admindyn  staff    306  8 18 16:56 ..
+-rwxr-xr-x@ 1 admindyn  staff  98624  8 18 16:56 Arduino
+macserver:MacOS admindyn$ cd /Applications/Arduino.app/Contents/Java 
+macserver:Java admindyn$ ls -la
+total 41016
+drwxr-xr-x@ 57 admindyn  staff     1938  8 18 16:55 .
+drwxr-xr-x@  9 admindyn  staff      306  8 18 16:56 ..
+-rw-r--r--@  1 admindyn  staff    11719  8 18 16:54 apple.jar
+-rwxr-xr-x@  1 admindyn  staff  3621312  8 18 16:55 arduino-builder
+-rw-r--r--@  1 admindyn  staff  1570198  8 18 16:54 arduino-core.jar
+-rw-r--r--@  1 admindyn  staff     5243  8 18 16:54 batik-1.8.jar
+-rw-r--r--@  1 admindyn  staff   377041  8 18 16:54 batik-anim-1.8.jar
+-rw-r--r--@  1 admindyn  staff   301026  8 18 16:54 batik-awt-util-1.8.jar
+-rw-r--r--@  1 admindyn  staff   529673  8 18 16:54 batik-bridge-1.8.jar
+-rw-r--r--@  1 admindyn  staff   108571  8 18 16:54 batik-codec-1.8.jar
+-rw-r--r--@  1 admindyn  staff   256539  8 18 16:54 batik-css-1.8.jar
+-rw-r--r--@  1 admindyn  staff   140057  8 18 16:54 batik-dom-1.8.jar
+-rw-r--r--@  1 admindyn  staff    10344  8 18 16:54 batik-ext-1.8.jar
+-rw-r--r--@  1 admindyn  staff   144226  8 18 16:54 batik-gvt-1.8.jar
+-rw-r--r--@  1 admindyn  staff    55267  8 18 16:54 batik-parser-1.8.jar
+-rw-r--r--@  1 admindyn  staff    47733  8 18 16:54 batik-rasterizer-1.8.jar
+-rw-r--r--@  1 admindyn  staff    17155  8 18 16:54 batik-script-1.8.jar
+-rw-r--r--@  1 admindyn  staff   503228  8 18 16:54 batik-squiggle-1.8.jar
+-rw-r--r--@  1 admindyn  staff   217197  8 18 16:54 batik-svg-dom-1.8.jar
+-rw-r--r--@  1 admindyn  staff    16697  8 18 16:54 batik-svgpp-1.8.jar
+-rw-r--r--@  1 admindyn  staff    92512  8 18 16:54 batik-transcoder-1.8.jar
+-rw-r--r--@  1 admindyn  staff   107736  8 18 16:54 batik-util-1.8.jar
+-rw-r--r--@  1 admindyn  staff    26776  8 18 16:54 batik-xml-1.8.jar
+-rw-r--r--@  1 admindyn  staff   274090  8 18 16:54 bcpg-jdk15on-152.jar
+-rw-r--r--@  1 admindyn  staff  2902942  8 18 16:54 bcprov-jdk15on-152.jar
+-rw-r--r--@  1 admindyn  staff   259600  8 18 16:54 commons-codec-1.7.jar
+-rw-r--r--@  1 admindyn  staff   364620  8 18 16:54 commons-compress-1.8.jar
+-rw-r--r--@  1 admindyn  staff    52543  8 18 16:54 commons-exec-1.1.jar
+-rw-r--r--@  1 admindyn  staff   305001  8 18 16:54 commons-httpclient-3.1.jar
+-rw-r--r--@  1 admindyn  staff   412739  8 18 16:54 commons-lang3-3.3.2.jar
+-rw-r--r--@  1 admindyn  staff    38015  8 18 16:54 commons-logging-1.0.4.jar
+-rw-r--r--@  1 admindyn  staff   280983  8 18 16:54 commons-net-3.3.jar
+drwxr-xr-x@ 13 admindyn  staff      442  8 18 16:55 examples
+drwxr-xr-x@  7 admindyn  staff      238  8 18 16:55 hardware
+-rw-r--r--@  1 admindyn  staff    46989  8 18 16:54 jackson-annotations-2.6.3.jar
+-rw-r--r--@  1 admindyn  staff   258875  8 18 16:54 jackson-core-2.6.3.jar
+-rw-r--r--@  1 admindyn  staff  1170801  8 18 16:54 jackson-databind-2.6.3.jar
+-rw-r--r--@  1 admindyn  staff    79882  8 18 16:54 jackson-module-mrbean-2.6.3.jar
+-rw-r--r--@  1 admindyn  staff    44721  8 18 16:54 java-semver-0.8.0.jar
+-rw-r--r--@  1 admindyn  staff   213137  8 18 16:54 jmdns-3.5.1.jar
+-rw-r--r--@  1 admindyn  staff  1137286  8 18 16:54 jna-4.2.2.jar
+-rw-r--r--@  1 admindyn  staff  1856200  8 18 16:54 jna-platform-4.2.2.jar
+-rw-r--r--@  1 admindyn  staff   254408  8 18 16:54 jsch-0.1.50.jar
+-rwxr-xr-x@  1 admindyn  staff   154476  8 18 16:54 jssc-2.8.0-arduino1.jar
+drwxr-xr-x@ 18 admindyn  staff      612  8 18 16:55 lib
+drwxr-xr-x@ 21 admindyn  staff      714  8 18 16:55 libraries
+-rw-r--r--@  1 admindyn  staff   421135  8 18 16:54 pde.jar
+drwxr-xr-x@  6 admindyn  staff      204  8 18 16:55 reference
+-rw-r--r--@  1 admindyn  staff    83671  8 18 16:54 revisions.txt
+-rw-r--r--@  1 admindyn  staff  1155639  8 18 16:54 rsyntaxtextarea-2.6.1.jar
+-rw-r--r--@  1 admindyn  staff    41077  8 18 16:54 slf4j-api-1.7.22.jar
+-rw-r--r--@  1 admindyn  staff    11070  8 18 16:54 slf4j-simple-1.7.22.jar
+drwxr-xr-x@  5 admindyn  staff      170  8 18 16:55 tools
+drwxr-xr-x@  3 admindyn  staff      102  3 20  2017 tools-builder
+-rw-r--r--@  1 admindyn  staff   194354  8 18 16:54 xml-apis-1.3.04.jar
+-rw-r--r--@  1 admindyn  staff    85686  8 18 16:54 xml-apis-ext-1.3.04.jar
+-rw-r--r--@  1 admindyn  staff   632499  8 18 16:54 xmlgraphics-commons-2.0.jar
+macserver:Java admindyn$ 
+
+	
