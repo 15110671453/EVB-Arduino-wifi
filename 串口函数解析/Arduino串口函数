@@ -1,0 +1,32 @@
+Arduino串口函数
+
+1.接收函数Serial.read( )
+int Serial.read(void)
+如果串行数据缓冲区有数据,这个函数会读取串行数据缓冲区的第一个字节,数据读取位置移动到下一个数据缓冲区,也就是说如果继续读取的话会读取下一个数据缓冲区的第一个字节.
+如果数据缓冲区没有数据,将返回-1.
+
+
+2,发送函数Serial.print
+
+首先注意: print是一个打印函数,主要用于在上位机上显示,让数据可视化,它会将数据用字符的形式(ASCII码)逐个发送到串口.    一般不用这个函数来进行数据传输.
+"256",而会分别显示'2','5','6'的ASCII码值,50,53,54(分三次发送,有三个地址不同的数据缓冲区)
+
+
+既然print是一个打印函数,那么自然,参数val的类型是任意的.
+
+Serial.print(val, format)
+将val的值转换成format指定的形式发送,可为BIN,OCT,HEX,DEC.
+
+
+3,发送函数Serial.write
+Serial.write(str)
+str为字符串的首地址,buf为一个用来存放数据的数组的首地址. 这个函数会先发送字符串,然后返回字符串的长度.
+
+Serial.write(val)
+val的数据类型为unsigned char,这个函数每次只发送一个字节的数据,所以val的值在0-255之间.
+
+Serial.write(buf, len)
+buf为要发送的数组的首地址(注意数组的类型为unsigned char),len为数组的长度.
+
+
+
