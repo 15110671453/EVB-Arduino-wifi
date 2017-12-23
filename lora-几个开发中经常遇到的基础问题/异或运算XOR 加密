@@ -1,0 +1,46 @@
+异或运算XOR 加密
+
+
+一种简单高效、非常安全的加密方法：XOR 加密。
+
+逻辑运算之中，除了 AND 和 OR，还有一种 XOR 运算，中文称为"异或运算"。
+它的定义是：两个值相同时，返回false，否则返回true。也就是说，XOR可以用来判断两个值是否不同。
+
+true XOR true // false
+false XOR false // false
+true XOR false // true
+true XOR false // true
+
+异或应用
+
+
+XOR 运算有一个很奇妙的特点：如果对一个值连续做两次 XOR，会返回这个值本身。
+// 第一次 XOR
+1010 ^ 1111 // 0101
+
+// 第二次 XOR
+0101 ^ 1111 // 1010
+上面代码中，原始值是1010，再任意选择一个值（上例是1111），做两次 XOR，最后总是会得到原始值1010。这在数学上是很容易证明的
+
+
+三、加密应用
+
+
+XOR 的这个特点，使得它可以用于信息的加密。
+
+
+message XOR key // cipherText
+cipherText XOR key // message
+
+上面代码中，原始信息是message，密钥是key，第一次 XOR 会得到加密文本cipherText。对方拿到以后，再用key做一次 XOR 运算，就会还原得到message。
+
+
+
+
+
+
+
+
+
+
+

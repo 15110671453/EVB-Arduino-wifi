@@ -1,0 +1,27 @@
+mysql数据库存储过程
+
+
+mysql> select * from t_dimuser;
++--------+--------+-----------+----------+-----------+----------------+-------------+
+| UserID | RoleID | LoginName | PassWord | RealName  | Email          | CellPhon    |
++--------+--------+-----------+----------+-----------+----------------+-------------+
+|      1 |      1 | admin     | 123456   | realname  | email@163.com  | 15811315712 |
+|      2 |      1 | admin1    | 123456   | realname2 | email2@163.com | 15811315713 |
+|      3 |      1 | admin2    | 123456   | realname3 | email3@163.com | 15811315714 |
++--------+--------+-----------+----------+-----------+----------------+-------------+
+3 rows in set (0.00 sec)
+
+
+这里 存储过程有一个需要注意  存储过程 in 参数 名 不要与 存储过程
+中 sql语句的 where 选择字段 名 一致 ，否则 数据库会恒认为是成立的 
+会返回多条数据  因此 这里的存储过程 in 参数 名字没有写为userid 而是ais
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `fullName`(in ais int ,OUT fullN varchar(256))
+BEGIN
+select ais as aa  ;
+
+select  CONCAT(LoginName) as bbb FROM t_dimuser Where UserID = ais;
+SELECT CONCAT(LoginName,'_',RealName)  INTO fullN FROM t_dimuser Where UserID = ais;
+
+END
