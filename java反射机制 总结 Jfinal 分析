@@ -1,0 +1,264 @@
+Java反射机制
+
+OC也有反射机制  
+
+
+OC通过类名 获取到class Java也可以通过类名获取Class
+
+而这个Class就是Java的字节码文件  
+
+Java的 反射机制 是基于字节码文件的
+
+
+ Classc a = Employee.class;
+ ---
+ Class c =Class.forName("Employee");
+ ---
+Employee e = new Employee();
+ Classc d = e.getClass();
+
+
+#############字节码文件处理Java提供了API############
+第一 根据字节码文件生成Class 感觉可以对应串口开发 或者我们处理文件操作 或者数据库操作的文件句柄  但这里肯定不是一个东西  但是放在这里 类比 
+是因为它们都是通过文件生成一个我们可以在变成中用来进一步 使用的指针对象 
+
+第二  下面通过Class这个句柄 操作一系列的 反射API 
+		比如 
+		获取属性描述器 可以是获取描述器数组 
+		或根据指定的属性名获取指定的属性描述器
+		//获取整个类
+		Class c = Class.forName("java.lang.Integer");
+		//获取所有的属性?
+		Field[] fs = c.getDeclaredFields();
+		//获取特定的属性
+		//获取id属性
+		Field idF = c.getDeclaredField("id");
+		
+		获取方法 可以是数组 也可以是指定方法名的方法  这里其实就是函数指针
+		//获取所有的方法
+		getDeclaredMethods()
+		//获得方法的传入参数类型
+		getParameterTypes()
+		获得特定的方法
+		//
+		getDeclaredMethod("方法名",参数类型.class,……)
+=======
+JavaBean 基本标准 第一 要满足作为数据承载器需求 数据模型
+			      第二  要实现序列化Serializable接口 远程传输承载完数据后的对象 序列化后的文本
+Jsp中使用useBean 就是通过反射机制来使用javabean的
+
+=============
+java 一个业务流代理模式
+特征   代理类与委托类有同样的接口 代理类负责为委托类预处理消息 过滤消息 把消息转发给委托类 以及事后处理消息等
+
+静态代理 程序员已经写好源代码 再对其编译 程序运行前 代理类的class文件已经存在了
+基本是  1  定义一个接口  2  实现接口的实现类  3 代理类 引用实现接口的实现类 （增强接口实现类的作用：代理类与委托类有同样的接口 代理类负责为委托类预处理消息 过滤消息 把消息转发给委托类 以及事后处理消息等）
+
+ /** 
+ * 定义一个账户接口 
+ */  
+ public interface Count {  
+    // 查看账户方法  
+     public void queryCount();  
+   
+     // 修改账户方法  
+      public void updateCount();    
+ }
+
+  import net.battier.dao.Count;  
+  /** 
+   * 委托类(包含业务逻辑) 
+   */  
+ public class CountImpl implements Count {  
+    
+      @Override  
+     public void queryCount() {  
+         System.out.println("查看账户方法...");  
+  
+    }  
+
+     @Override  
+     public void updateCount() {  
+         System.out.println("修改账户方法...");  
+    }  
+ } 
+  import net.battier.dao.Count; 
+   * 这是一个代理类（增强CountImpl实现类） 
+   */  
+  public class CountProxy implements Count {  
+     private CountImpl countImpl;  
+      /** 
+      * 覆盖默认构造器 
+       *  
+     * @param countImpl 
+      */  
+     public CountProxy(CountImpl countImpl) {  
+         this.countImpl = countImpl;  
+     }  
+   
+    @Override  
+    public void queryCount() {  
+         System.out.println("事务处理之前");  
+         // 调用委托类的方法;  
+         countImpl.queryCount();  
+         System.out.println("事务处理之后");  
+     }  
+   
+    @Override  
+    public void updateCount() {  
+        System.out.println("事务处理之前");  
+         // 调用委托类的方法;  
+         countImpl.updateCount();  
+         System.out.println("事务处理之后");  
+    }  
+ } 
+
+  import net.battier.dao.impl.CountImpl;  
+  import net.battier.dao.impl.CountProxy;    
+ /** 
+  *测试Count类 
+   */  
+  public class TestCount {  
+    public static void main(String[] args) {  
+         CountImpl countImpl = new CountImpl();  
+        CountProxy countProxy = new CountProxy(countImpl);  
+         countProxy.updateCount();  
+        countProxy.queryCount();  
+     }  
+ }  
+
+
+动态代理
+程序运行时 利用反射机制动态生成 [动态代理的字节码程序是在程序运行时由java反射机制生成字节码文件的]
+
+但要实现这一点需要在类代码中使用Proxy代理这个公共类 并且实现 InvocationHandler 消息分发接口 
+
+ public interface BookFacade {  
+     public void addBook();  
+ }  
+
+
+import net.battier.dao.BookFacade;  
+  
+public class BookFacadeImpl implements BookFacade {  
+  
+    @Override  
+    public void addBook() {  
+        System.out.println("增加图书方法。。。");  
+    }  
+}
+
+import java.lang.reflect.InvocationHandler;  
+import java.lang.reflect.Method;  
+import java.lang.reflect.Proxy;  
+/** 
+ * JDK动态代理代理类 ----这其实是一个生成代理的工工厂类
+ */  
+public class BookFacadeProxy implements InvocationHandler {  
+    private Object target;  
+    /** 
+     * 绑定委托对象并返回一个代理类 
+     * @param target 
+     * @return 
+     */  
+    public Object bind(Object target) {  
+        this.target = target;  
+        //取得代理对象  
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(),  
+                target.getClass().getInterfaces(), this);   //要绑定接口(这是一个缺陷，cglib弥补了这一缺陷)  
+    }  
+  
+    @Override  
+    /** 
+     * 调用方法 
+     */  
+    public Object invoke(Object proxy, Method method, Object[] args)  
+            throws Throwable {  
+        Object result=null;  
+        System.out.println("事物开始");  
+        //执行方法  
+        result=method.invoke(target, args);  
+        System.out.println("事物结束");  
+        return result;  
+    }  
+}
+
+
+import net.battier.dao.BookFacade;  
+import net.battier.dao.impl.BookFacadeImpl;  
+import net.battier.proxy.BookFacadeProxy;  
+  
+public class TestProxy {  
+    public static void main(String[] args) {  
+        BookFacadeProxy proxy = new BookFacadeProxy();  
+        BookFacade bookProxy = (BookFacade) proxy.bind(new BookFacadeImpl());  
+        bookProxy.addBook();  
+    }    
+}
+
+cglib代理  这个也是动态代理 但是他没有帮我们 像Proxy为当前类邦定接口实现类 和 接口实现类的接口 而是只邦定了接口实现类  而没有邦定接口实现类的接口
+
+然后通过拦截器方式 拦截---拦截过程我们完成--预处理消息 过滤消息 把消息转发给委托类 以及事后处理消息等
+
+JDK的动态代理机制只能代理实现了接口的类，而不能实现接口的类就不能实现JDK的动态代理，cglib是针对类来实现代理的，他的原理是对指定的目标类生成一个子类，并覆盖其中方法实现增强，但因为采用的是继承，所以不能对final修饰的类进行代理
+
+ public interface BookFacade {  
+     public void addBook();  
+ } 
+
+ /** 
+  * 这个是没有实现接口的实现类 
+ */  
+ public class BookFacadeImpl1 {  
+     public void addBook() {  
+         System.out.println("增加图书的普通方法...");  
+    }  
+}
+
+import net.sf.cglib.proxy.Enhancer;  
+import net.sf.cglib.proxy.MethodInterceptor;  
+import net.sf.cglib.proxy.MethodProxy;    
+/** 
+  * 使用cglib动态代理  这其实是一个生成代理的工工厂类
+  */  
+public class BookFacadeCglib implements MethodInterceptor {  
+     private Object target;  
+   
+     /** 
+      * 创建代理对象 
+      *  
+      * @param target 
+     * @return 
+      */  
+     public Object getInstance(Object target) {  
+         this.target = target;  
+         Enhancer enhancer = new Enhancer();  
+         enhancer.setSuperclass(this.target.getClass());  
+         // 回调方法  
+         enhancer.setCallback(this);  
+         // 创建代理对象  
+         return enhancer.create();  
+     }  
+  
+    @Override  
+     // 回调方法  
+     public Object intercept(Object obj, Method method, Object[] args,  
+             MethodProxy proxy) throws Throwable {  
+         System.out.println("事物开始");  
+         proxy.invokeSuper(obj, args);  
+         System.out.println("事物结束");  
+         return null;  
+     }  
+ }
+
+import net.battier.dao.impl.BookFacadeImpl1;  
+import net.battier.proxy.BookFacadeCglib;  
+  
+public class TestCglib {  
+      
+    public static void main(String[] args) {  
+        BookFacadeCglib cglib=new BookFacadeCglib();  
+        BookFacadeImpl1 bookCglib=(BookFacadeImpl1)cglib.getInstance(new BookFacadeImpl1());  
+        bookCglib.addBook();  
+    }  
+}
