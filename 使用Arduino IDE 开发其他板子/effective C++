@@ -1,0 +1,195 @@
+effective C++ 
+
+要点
+	关于重载赋值运算符 与 拷贝构造函数 在继承中需要注意
+
+		在 Derived 的赋值运算符里显式地 对 Derived 的 Base 部分赋值。
+		也就是这么做:
+		
+		// 正确的赋值运算符
+		Derived& Derived::operator=(const Derived& rhs) {
+			if (this == &rhs) return *this;
+			Base::operator=(rhs); // 调用this->Base::operator= y = rhs.y;
+			return *this;
+			 }
+		
+		这里只是显式地调用了 Base::operator=，这个调用和一般情况下的在成员 函数中调用另外的成员函数一样，以*this 作为它的隐式左值。Base::operator= 将针对*this 的 Base 部分执行它所有该做的工作——正如你所想得到的那种效 果。
+		
+		但如果基类赋值运算符是编译器生成的，有些编译器会拒绝这种对于基类 赋值运算符的调用(见条款 45)。为了适应这种编译器，必须这样实现 Derived::operator=:
+		
+		Derived& Derived::operator=(const Derived& rhs) {
+			if (this == &rhs) return *this;
+			static_cast<Base&>(*this) = rhs; // 对*this的Base部分 // 调用operator=
+			y = rhs.y;
+			return *this;
+			 }
+		
+		这段怪异的代码将*this 强制转换为 Base 的引用，然后对其转换结果赋值。 这里只是对 Derived 对象的 Base 部分赋值。还要注意的重要一点是，转换的 是 Base 对象的引用，而不是 Base 对象本身。如果将*this 强制转换为 Base 对 象，就要导致调用 Base 的拷贝构造函数，创建出来的新对象(见条款 M19) 就成为了赋值的目标，而*this 保持不变。这不是所想要的结果。
+		
+		不管采用哪一种方法，在给 Derived 对象的 Base 部分赋值后，紧接着是 Derived 本身的赋值，即对 Derived 的所有数据成员赋值。
+		
+		另一个经常发生的和继承有关的类似问题是在实现派生类的拷贝构造函数 时。看看下面这个构造函数，其代码和上面刚讨论的类似:
+		
+		class Base { public:
+			Base(int initialValue = 0): x(initialValue) {} Base(const Base& rhs): x(rhs.x) {}
+			private: int x;
+		};
+
+		class Derived: public Base { public:
+			Derived(int initialValue)
+			: Base(initialValue), y(initialValue) {}
+			Derived(const Derived& rhs) // 错误的拷贝 : y(rhs.y) {} // 构造函数
+			private: int y;
+		};
+		
+		类 Derived 展现了一个在所有 C++环境下都会产生的 bug:当 Derived 的 拷贝创建时，没有拷贝其基类部分。当然，这个 Derived 对象的 Base 部分还 是创建了，但它是用 Base 的缺省构造函数创建的，成员 x 被初始化为 0(缺省 构造函数的缺省参数值)，而没有顾及被拷贝的对象的 x 值是多少!
+		
+		为避免这个问题，Derived 的拷贝构造函数必须保证调用的是 Base 的拷贝 构造函数而不是 Base 的缺省构造函数。这很容易做，只要在 Derived 的拷贝 构造函数的成员初始化列表里对 Base 指定一个初始化值:
+		class Derived: public Base { public:
+			Derived(const Derived& rhs): Base(rhs), y(rhs.y) {} ...
+		};
+		现在，当用一个已有的同类型的对象来拷贝创建一个 Derived 对象时，它 的 Base 部分也将被拷贝了。
+
+要点一
+
+	关于成员函数 与  友元函数 与 虚函数
+
+	需要访问非公有成员的非成员函数只能是类的友元函数。
+	本条款得出的结论如下。假设 f 是想正确声明的函数，C 是和它相关的类:
+	虚函数必须是成员函数（成员函数可以继承 非成员函数 不可以继承）。如果 f 必须是虚函数，就让它成为 C 的成员函数。
+	operator>>和 operator<<决不能是成员函数。如果 f 是 operator>>或 operator<<，让 f 成为非成员函数。如果 f 还需要访问 C 的非公有成员，让 f 成 为 C 的友元函数。
+	只有非成员函数对最左边的参数进行类型转换。如果 f 需要对最左边的参
+	数进行类型转换，让 f 成为非成员函数。如果 f 还需要访问 C 的非公有成员， 让f成为C的友元函数。
+	其它情况下都声明为成员函数。如果以上情况都不是，让 f 成为 C 的成员 函数。
+
+要点二 
+	
+	如何声明定义变量 const 常量
+	第105页
+
+	对指针来说，可以指定指针本身为 const，也可以指定指针所指的数据为
+	const，或二者同时指定为 const，还有，两者都不指定为 const:
+
+char *p = "Hello"; // 非const指针,// 非const数据
+char * const p = "Hello"; // 非const指针, // const 数据
+const char *p = "Hello";// const指针,// 非const数据
+const char * const p = "Hello";// const指针,// const 数据
+
+要点三
+	关于 const 成员函数
+
+	看一个基本原理。一个成员函数为const的确切含义是什么? 有两种主要的看法:数据意义上的const(bitwise constness)和概念意义上的 const(conceptual constness)。
+
+	利用 C++标准组织针对这类情况专门提供的有关 const 问题的另一个可选方案。此方案使用了关键字 mutable，当对非静态数据成员
+	运用 mutable 时，这些成员的“bitwise constness”限制就被解除:
+
+
+要点四 
+	关于什么时候消除 const
+
+	类 C 的一个成员函数中，this 指针就好象经过如下的声明: C * const this; // 非const成员函数中 const C * const this; // const成员函数中
+
+	这种情况下(即编译器不支持 mutable 的情况下)，如果想使那个有问题的 String::length 版本对 const 和非 const 对象都合法，就只有把 this 的类型从 const C * const改成C * const。不能直接这么做，但可以通过初始化一个局部变量 指针，使之指向 this 所指的同一个对象来间接实现。
+
+	然后，就可以通过这个局 部指针来访问你想修改的成员:
+	size_t String::length() const {
+	// 定义一个不指向const对象的 // 局部版本的this指针
+	String * const localThis = const_cast<String * const>(this);
+
+	if (!lengthIsValid) { 
+			localThis->dataLength = strlen(data); localThis->lengthIsValid = true;
+	}
+	return dataLength;
+	}
+	
+	做的不是很漂亮。但为了完成想要的功能也就只有这么做。
+	当然，如果不能保证这个方法一定可行，就不要这么做:比如，一些老的 “消除 const”的方法就不行。特别是，如果 this 所指的对象真的是 const，即， 在定义时被声明为 const，那么，“消除 const”就会导致不可确定的后果。所以， 如果想在成员函数中通过转换消除 const，就最好先确信你要转换的对象最初 没有被定义为 const。
+	
+	还有一种情况下，通过类型转换消除 const 会既有用又安全。这就是:将 一个 const 对象传递到一个取非 const 参数的函数中，同时你又知道参数不会 在函数内部被修改的情况时。第二个条件很重要，因为对一个只会被读的对象 (不会被写)消除 const 永远是安全的，即使那个对象最初曾被定义为 const。
+	例如，已经知道有些库不正确地声明了象下面这样的 strlen 函数: size_t strlen(char *s);
+	
+	strlen 当然不会去修改 s 所指的数据——至少我一辈子没看见过。但因为 有了这个声明，对一个 const char *类型的指针调用这个函数时就会不合法。为 解决这个问题，可以在给 strlen 传参数时安全地把这个指针的 const 强制转换 掉:
+	
+	const char *klingonGreeting = "nuqneH"; // "nuqneH"即"Hello" //
+	size_t length = strlen(const_cast<char*>(klingonGreeting));
+	但不要滥用这个方法。只有在被调用的函数(比如本例中的 strlen)不会 修改它的参数所指的数据时，才能保证它可以正常工作。
+
+
+
+要点五 对构造函数 添加explicit 拒绝不必要的类型转换
+		只有所涉及的构造函数没有声明为 explicit 的情况下才会这样（用于隐式转换），因为 explicit 构造函数不能用于隐式转换，这正是 explicit 的含义
+
+
+
+要点六  我们在传参时尽量使用传引用 不要传值
+		
+		但不能极端 在我们一些函数处理 然后返回值时 不一定也非要实现返回引用
+
+		函数 要返回引用 必须保证 
+
+		第一 返回引用 必须这个引用真的存在 就免不了至少要在该函数处理中 new 使用到构造函数 增加开销
+
+		不恰当的返回引用 造成内存泄漏
+
+		那么，在堆上创建一个对象然后返回它的引用呢?基于堆的对象是通过使 用 new 产生的，所以应该这样写 operator*:
+		// 写此函数的第二个错误方法
+		inline const Rational& operator*(const Rational& lhs,
+		const Rational& rhs)
+		{
+			Rational *result =
+			new Rational(lhs.n * rhs.n, lhs.d * rhs.d); return *result;
+		}
+		
+		首先，你还是得负担构造函数调用的开销，因为 new 分配的内存是通过调 用一个适当的构造函数来初始化的(见条款 5 和 M8)。另外，还有一个问题: 谁将负责用 delete 来删除掉 new 生成的对象呢?
+
+		实际上，这绝对是一个内存泄漏。即使可以说服 operator*的调用者去取函 数返回值地址，然后用 delete 去删除它(绝对不可能——条款 31 展示了这样 的代码会是什么样的)，但一些复杂的表达式会产生没有名字的临时值，程序员 是不可能得到的。
+		例如:
+		Rational w, x, y, z;
+		w = x * y * z;
+		两个对 operator*的调用都产生了没有名字的临时值，程序员无法看到，因
+		而无法删除。(再次参见条款 31)
+
+		也许，你会想你比一般的熊——或一般的程序员——要聪明;也许，你注 意到在堆栈和堆上创建对象的方法避免不了对构造函数的调用;也许，你想起 了我们最初的目标是为了避免这种对构造函数的调用;也许，你有个办法可以 只用一个构造函数来搞掂一切;也许，你的眼前出现了这样一段代码:operator* 返回一个“在函数内部定义的静态 Rational 对象”的引用:
+
+
+		第二 如果返回引用在以后其他函数使用该返回值 是不是会影响本来的编程逻辑习惯
+
+
+		// 写此函数的第三个错误方法
+		inline const Rational& operator*(
+				const Rational& lhs,
+				const Rational& rhs) static Rational result; // 将要作为引用返回的
+				// 静态对象 lhs 和 rhs 相乘，结果放进 result;
+				return result; 
+		}
+		
+		这个方法看起来好象有戏，虽然在实际实现上面的伪代码时你会发现，不 调用一个 Rational 构造函数是不可能给出 result 的正确值的，而避免这样的调 用正是我们要谈论的主题。就算你实现了上面的伪代码，但，你再聪明也不能 最终挽救这个不幸的设计。
+		
+		想知道为什么，看看下面这段写得很合理的用户代码:
+		{
+			bool operator==(const Rational& lhs, const Rational& rhs);
+			Rational a, b, c, d;
+				...
+			if ((a * b) == (c * d)) {
+				处理相等的情况; 
+				} else {
+
+				处理不相等的情况;
+				 }
+		// Rationals的operator== //
+		看出来了吗?((a*b) == (c*d)) 会永远为 true，不管 a，b，c 和 d 是什么值!
+
+
+		//看来最终适合该两条原则的 只有构造函数 才会满足  因为 构造函数返回引用 我们
+		只是使用引用 不再去做函数处理
+
+
+要点七 
+	
+	截止 126 页 
+
+
+
+
+
+
